@@ -1,0 +1,10 @@
+{
+  "Name": "TeleportToYourLove",
+  "Author": "kurserino",
+  "Version": "1.0.0",
+  "Description": "Let you use your wedding ring to teleport to your loved one!",
+  "UniqueID": "kurserino.TeleportToYourLove",
+  "EntryDll": "TeleportToYourLove.dll",
+  "MinimumApiVersion": "3.0.0",
+  "UpdateKeys": ["Nexus:9999"]
+}
