@@ -5,11 +5,13 @@ namespace TeleportToYourLove.Framework
   {
     // Definition of your config file
     public string YourLoveName { get; set; }
+    public string ButtonMap { get; set; }
 
     public ModConfig()
     {
       // Set default values
       YourLoveName = "";
+      ButtonMap = "Tool button";
     }
   }
 }

@@ -38,6 +38,14 @@ namespace TeleportToYourLove
           getValue: () => Config.YourLoveName,
           setValue: value => Config.YourLoveName = value
       );
+
+      configMenu.AddTextOption(
+          mod: ModManifest,
+          name: () => "Button map",
+          allowedValues: new[] { "Tool button", "Action button" },
+          getValue: () => Config.ButtonMap,
+          setValue: value => Config.ButtonMap = value
+      );
     }
 
     /*********
@@ -53,21 +61,22 @@ namespace TeleportToYourLove
         return;
 
       bool isUseToolButton = e.Button.IsUseToolButton();
+      bool isActionButton = e.Button.IsActionButton();
+      bool isMappedButton = Config.ButtonMap == "Tool button" ? isUseToolButton : isActionButton;
+      Item currentItem = Game1.player.CurrentItem;
+      bool isWeddingRing = currentItem != null && currentItem.ParentSheetIndex == 801;
 
-      if (isUseToolButton && Game1.player.CurrentItem != null)
+      if (currentItem != null && isMappedButton && isWeddingRing)
       {
-        bool isWeddingRing = Game1.player.CurrentItem.ParentSheetIndex == 801;
-
-        if (isWeddingRing)
-        {
           // Check if another connected player to your world is married to you
-          foreach (var player in Game1.getAllFarmers())
+          var connectedPlayers = Helper.Multiplayer.GetConnectedPlayers();
+          foreach (var connectedPlayer in connectedPlayers)
           {
+            var player = Game1.getFarmer(connectedPlayer.PlayerID);
             if (player != null && player != Game1.player)
             {
               // Check if the player is the target player
               bool isLocalTargetPlayer = Config.YourLoveName == Game1.player.Name;
-              var connectedPlayers = Helper.Multiplayer.GetConnectedPlayers();
               var connectedHostPlayer = connectedPlayers.FirstOrDefault(peer => peer.IsHost);
               var hostPlayer = connectedHostPlayer != null ? Game1.getFarmer(connectedHostPlayer.PlayerID) : Game1.player;
               bool isTargetPlayer = (isLocalTargetPlayer ? hostPlayer.Name : Config.YourLoveName) == player.Name;
@@ -81,7 +90,6 @@ namespace TeleportToYourLove
                 Game1.player.warpFarmer(destiny);
               }
             }
-          }
         }
       }
     }
